@@ -92,4 +92,4 @@ Each **Message**, sent or received, is **structured as a sentence** (Message Hea
 [link-source-8]: https://wayland-book.com/protocol-design/wire-protocol.html#wire-protocol-basics
 [link-source-9]: https://wayland-book.com/protocol-design/wire-protocol.html#messages
 [link-source-trust]: https://i.kym-cdn.com/photos/images/original/002/051/481/93e.jpg
-[link-source-smoke-signals]: https://github.com/MaxineToTheStars/the-wayland-documentation-but-better/blob/main/resources/smoke.png
+[link-source-smoke-signals]: https://github.com/MaxineToTheStars/the-wayland-protocol-documentation-but-better/blob/main/resources/smoke.png
