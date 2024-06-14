@@ -81,7 +81,7 @@ Each **Message**, sent or received, is **structured as a sentence** (Message Hea
 
 ### Layer 1: Conduits
 
-Each **Message sent over The Wire** is **categorized** as either a **request or an event**. A **request** is a **Client-Server Message** (eg a client requesting for the current window to be shown). An **event** is a **Server-Client Message** (eg a server telling a client all available interfaces/protocols). Each **Message** contains a **signature** similar to the **example shown**<sup>[[10][link-source-10]]</sup>:
+Each **Message sent over The Wire** is **categorized** as either a **request or an event**. A **request** is a **Client-Server Message** (eg a client requesting for the current window to be shown). An **event** is a **Server-Client Message** (eg a server telling a client all available interfaces/protocols). Each **Message** contains a **signature** similar to the **example shown**.<sup>[[10][link-source-10]]</sup>
 
 ```sh
 32 Bit Value                  : ObjectID
@@ -97,7 +97,7 @@ The **heart of Wayland** can be **found here**:
 cat /usr/share/wayland/wayland.xml
 ```
 
-Each **Wayland Protocol** is **defined** in a **`.xml` file**. Each **file contains** a **series of interfaces**, each **interface contains** a **series of events and/or requests**, and each **event and/or request** has a **list of arguments and/or outputs**. In order for **any type of communication to happen** between **server and client**, some **ground rules** have to be established. Specifically that **`ObjectID: 1` is STRICTLY RESERVED for `wl_display`**. With **`wl_display`** being **strictly set to `1`** it allows for **clients to request `wl_display::get_registry`** on connection time. However, **how does the server know** which **request/event** we want? **Operation Codes** (or simply _opcode(s)_ in this document) allow us to **select which request/event** we are **tying our Message to**. Each **interface** has a **set of opcodes** to choose from. **Starting** from **0** all the way **to n**<sup>**th**</sup>, n being **the final request/event**.<sup>[[10][link-source-10]] [[11][link-source-11]]</sup> Take the following interface below:
+Each **Wayland Protocol** is **defined** in a **`.xml` file**. Each **file contains** a **series of interfaces**, each **interface contains** a **series of events and/or requests**, and each **event and/or request** has a **list of arguments and/or outputs**. In order for **any type of communication to happen** between **server and client**, some **ground rules** have to be established. Specifically that **`ObjectID: 1` is STRICTLY RESERVED for `wl_display`**. With **`wl_display`** being **bound to `1`** it allows for **clients to request `wl_display::get_registry`** at connection time. However, **how does the server know** which **request/event** we want? **Operation Codes** (or simply _opcode(s)_ in this document) allow us to **select which request/event** we are **tying our Message to**. Each **interface** has a **set of opcodes** to choose from. **Starting** from **0** all the way **to n**<sup>**th**</sup>, n being **the final request/event**.<sup>[[10][link-source-10]] [[11][link-source-11]]</sup> Take the following interface below:
 
 ```sh
 <interface name="wl_registry" version="1">
