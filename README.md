@@ -21,6 +21,7 @@
 - [Welcome to The Wire(d)](#welcome-to-the-wired)
   - [Messages](#layer-0-whispers)
   - [Events and Requests](#layer-1-conduits)
+  - [Interfaces and Operation Codes](#layer-2-hymns)
 
 <!-- Move text down -->
 <br>
@@ -80,6 +81,42 @@ Each **Message**, sent or received, is **structured as a sentence** (Message Hea
 
 ### Layer 1: Conduits
 
+Each **Message sent over The Wire** is **categorized** as either a **request or an event**. A **request** is a **Client-Server Message** (eg a client requesting for the current window to be shown). An **event** is a **Server-Client Message** (eg a server telling a client all available interfaces/protocols). Each **Message** contains a **signature** similar to the **example shown**<sup>[[10][link-source-10]]</sup>
+:
+
+```sh
+32 Bit Value                  : ObjectID
+16 Bit Value + 16 Bit Value   : Message Length + Request Operation Code
+Padded 32 Bit Value(s)        : Payload
+```
+
+### Layer 2: Hymns
+
+The **heart of Wayland** can be **found here**:
+
+```sh
+cat /usr/share/wayland/wayland.xml
+```
+
+Each **Wayland Protocol** is **defined** in a **`.xml` file**. Each **file contains** a **series of interfaces**, each **interface contains** a **series of events and/or requests**, and each **event and/or request** has a **list of arguments and/or outputs**. In order for **any type of communication to happen** between **server and client** some **ground rules** have to be established. Specifically that **`ObjectID: 1`is STRICTLY RESERVED for `wl_display`**. With **`wl_display`** being **strictly set to `1`** it allows for **clients to request `wl_display::get_registry`** on connection time. However, **how does the server know** which **request/event** we want? **Operation Codes** (or simply _opcode(s)_ in this document) allow us to **select which request/event** we are **tying our Message too**. Each **interface** has a **set of opcodes** to choose from. **Starting** from **0** all the way **to n**<sup>**th**</sup>, n being **the final request/event**.<sup>[[10][link-source-10]] [[11][link-source-11]]</sup> Take the following interface below:
+
+```sh
+<interface name="wl_registry" version="1">
+  <request name="bind">
+    <arg name="name" type="uint" />
+    <arg name="id" type="new_id" />
+  </request>
+
+  <event name="global">
+    <arg name="name" type="uint" />
+    <arg name="interface" type="string" />
+    <arg name="version" type="uint" />
+  </event>
+</interface>
+```
+
+The **interface `wl_registry`** has **two opcodes**. **Opcode 0** is a **request** that **calls `wl_registry::bind`** and **opcode 1** is an **event** that **calls `wl_registry::global`**.<sup>[[Trust Me][link-source-trust]]</sup>
+
 <!-- Sources -->
 
 [link-source-1]: https://wayland.freedesktop.org/docs/html/
@@ -91,5 +128,7 @@ Each **Message**, sent or received, is **structured as a sentence** (Message Hea
 [link-source-7]: https://wayland.freedesktop.org/docs/html/ch04.html#sect-Protocol-Wire-Format
 [link-source-8]: https://wayland-book.com/protocol-design/wire-protocol.html#wire-protocol-basics
 [link-source-9]: https://wayland-book.com/protocol-design/wire-protocol.html#messages
-[link-source-trust]: https://i.kym-cdn.com/photos/images/original/002/051/481/93e.jpg
+[link-source-10]: https://wayland-book.com/protocol-design/interfaces-reqs-events.html#interfaces-requests-and-events
+[link-source-11]: https://wayland-book.com/registry.html#globals--the-registry
+[link-source-trust]: https://github.com/MaxineToTheStars/the-wayland-protocol-documentation-but-better/blob/main/resources/trust.png
 [link-source-smoke-signals]: https://github.com/MaxineToTheStars/the-wayland-protocol-documentation-but-better/blob/main/resources/smoke.png
