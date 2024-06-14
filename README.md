@@ -61,7 +61,7 @@ A **Wayland Client** (or simply _client_ in this document) is **any application*
 
 ### Layer 0: Whispers
 
-**The Wire Protocol** revolves around a **stream of Messages** sent **to and from** the **server/client**. Each **Message** is **built** with the **following primitives**:
+**The Wire Protocol** revolves around a **stream of _Messages_** sent **to and from** the **server/client**. Each **_Message_** is **built** with the **following primitives**:
 
 | Primitive Type |                                                                                                          Description                                                                                                          |           Overview           |
 | :------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------: |
@@ -77,12 +77,11 @@ A **Wayland Client** (or simply _client_ in this document) is **any application*
 
 \* Although the protocol **_does not explicitly state_** what encoding should be used, **most people** end up using **UTF-8**. 😛
 
-Each **Message**, sent or received, is **structured as a sentence** (Message Header + Message Payload). Each **sentence** is **made up of words** (Primitive types). The **Message header** is made up of **two words**. The **first word** is a **32 bit value** that contains the **affected ObjectID**. The **second word** is made up of **two letters** (16-bit values). The **upper 16 bits** is the **size of the message** (including the header). The **lower 16 bits** are the **event/request** Operation Code (also known as an **opcode**). After the **Message header** then comes the **payload/arguments**. It must be noted that **EVERY argument** must be **aligned to 32 bits** (**padding** must be done with **undefined data**) and that **ALL data** must be **encoded** in the **host's byte order**.<sup>[[7][link-source-7]] [[8][link-source-8]] [[9][link-source-9]]</sup>
+Each **Message**, sent or received, is **structured as a sentence** (Message Header + Message Payload). Each **sentence** is **made up of words** (Primitive types). The **Message Header** is made up of **two words**. The **first word** is a **32 bit value** that contains the **affected ObjectID**. The **second word** is made up of **two letters** (16-bit values). The **upper 16 bits** is the **size of the Message** (including the header). The **lower 16 bits** are the **event/request** Operation Code (also known as an **opcode**). After the **Message Header** then comes the **Message Arguments/Outputs**. It must be noted that **EVERY ARGUMENT/OUTPUT** must be **aligned to 32 bits** (**padding** must be done with **undefined data**) and that **ALL DATA** must be **encoded** in the **host's byte order**.<sup>[[7][link-source-7]] [[8][link-source-8]] [[9][link-source-9]]</sup>
 
 ### Layer 1: Conduits
 
-Each **Message sent over The Wire** is **categorized** as either a **request or an event**. A **request** is a **Client-Server Message** (eg a client requesting for the current window to be shown). An **event** is a **Server-Client Message** (eg a server telling a client all available interfaces/protocols). Each **Message** contains a **signature** similar to the **example shown**<sup>[[10][link-source-10]]</sup>
-:
+Each **Message sent over The Wire** is **categorized** as either a **request or an event**. A **request** is a **Client-Server Message** (eg a client requesting for the current window to be shown). An **event** is a **Server-Client Message** (eg a server telling a client all available interfaces/protocols). Each **Message** contains a **signature** similar to the **example shown**<sup>[[10][link-source-10]]</sup>:
 
 ```sh
 32 Bit Value                  : ObjectID
@@ -98,7 +97,7 @@ The **heart of Wayland** can be **found here**:
 cat /usr/share/wayland/wayland.xml
 ```
 
-Each **Wayland Protocol** is **defined** in a **`.xml` file**. Each **file contains** a **series of interfaces**, each **interface contains** a **series of events and/or requests**, and each **event and/or request** has a **list of arguments and/or outputs**. In order for **any type of communication to happen** between **server and client** some **ground rules** have to be established. Specifically that **`ObjectID: 1`is STRICTLY RESERVED for `wl_display`**. With **`wl_display`** being **strictly set to `1`** it allows for **clients to request `wl_display::get_registry`** on connection time. However, **how does the server know** which **request/event** we want? **Operation Codes** (or simply _opcode(s)_ in this document) allow us to **select which request/event** we are **tying our Message too**. Each **interface** has a **set of opcodes** to choose from. **Starting** from **0** all the way **to n**<sup>**th**</sup>, n being **the final request/event**.<sup>[[10][link-source-10]] [[11][link-source-11]]</sup> Take the following interface below:
+Each **Wayland Protocol** is **defined** in a **`.xml` file**. Each **file contains** a **series of interfaces**, each **interface contains** a **series of events and/or requests**, and each **event and/or request** has a **list of arguments and/or outputs**. In order for **any type of communication to happen** between **server and client**, some **ground rules** have to be established. Specifically that **`ObjectID: 1` is STRICTLY RESERVED for `wl_display`**. With **`wl_display`** being **strictly set to `1`** it allows for **clients to request `wl_display::get_registry`** on connection time. However, **how does the server know** which **request/event** we want? **Operation Codes** (or simply _opcode(s)_ in this document) allow us to **select which request/event** we are **tying our Message to**. Each **interface** has a **set of opcodes** to choose from. **Starting** from **0** all the way **to n**<sup>**th**</sup>, n being **the final request/event**.<sup>[[10][link-source-10]] [[11][link-source-11]]</sup> Take the following interface below:
 
 ```sh
 <interface name="wl_registry" version="1">
