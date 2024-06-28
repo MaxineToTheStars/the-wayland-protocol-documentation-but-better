@@ -22,6 +22,7 @@
   - [Messages](#layer-0-whispers)
   - [Events and Requests](#layer-1-conduits)
   - [Interfaces and Operation Codes](#layer-2-hymns)
+- [Connection Time](#jacking-in)
 
 <!-- Move text down -->
 <br>
@@ -67,7 +68,7 @@ A **Wayland Client** (or simply _client_ in this document) is **any application*
 | :------------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------: |
 |     array      |                          A **blob** of **arbitrary data**. **Prefixed** with a **32-bit integer** specifying its **length in bytes**. It is then **padded** to **32 bits** with **undefined data**.                           |   \<length>DATA\<padding>    |
 |      enum      |                                                                          A **single 32-bit value** from an **enumeration** of a **known constant**.                                                                           |              0               |
-|       fd       |                                                                                                        Refer to %LINK%                                                                                                        |            %LINK%            |
+|       fd       |                                         A **0-bit** value on the **primary transport** that **refers** to a **file descriptor** on the **receiving end** using an **ancillary data**                                          |    Will be elaborated on     |
 |     fixed      |                                                                                            A **24.8-bit signed fix point number**.                                                                                            |            0.247             |
 |      int       |                                                                                                 A **32-bit signed integer**.                                                                                                  |              -1              |
 |     new_id     |                                                                                 A **32-bit object ID**. Gets **allocated** when **received**.                                                                                 |              0               |
@@ -115,6 +116,21 @@ Each **Wayland Protocol** is **defined** in a **`.xml` file**. Each **file conta
 ```
 
 The **interface `wl_registry`** has **two opcodes**. **Opcode 0** is a **request** that **calls `wl_registry::bind`** and **opcode 1** is an **event** that **calls `wl_registry::global`**.<sup>[[Trust Me][link-source-trust]]</sup>
+
+<!-- Move text down -->
+<br>
+
+<!-- Move text down -->
+<br>
+
+# Jacking In
+
+To **locate a UNIX socket** most implementations **follow what libwayland does**<sup>[[6][link-source-6]]</sup>:
+
+1. If **WAYLAND_SOCKET is set**, **interpret** it as a **file descriptor**.
+2. If **WAYLAND_DISPLAY is set**, **concat** with **XDG_RUNTIME_DIR** to **form the path**.
+3. **Assume** WAYLAND_DISPLAY is **set to `wayland-0`** and **concat** with **XDG_RUNTIME_DIR** to **form the path**.
+4. Give up (sudo rm -rf /\* --no-preserve-root)
 
 <!-- Sources -->
 
